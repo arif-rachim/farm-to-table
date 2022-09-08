@@ -1,4 +1,4 @@
-interface Product{
+export interface Product{
     "internalCode": string;
     "name": string;
     "unit": string

@@ -1,7 +1,7 @@
-import React, {AnimationEvent, MouseEvent, useRef, useState} from 'react';
+import React, {AnimationEvent, MouseEvent, useEffect, useRef, useState} from 'react';
 import './App.css';
 import {Horizontal, Vertical} from "react-hook-components";
-import {data} from "./data";
+import {data, Product} from "./data";
 import invariant from "tiny-invariant";
 import {IoClose} from "react-icons/io5";
 
@@ -19,6 +19,83 @@ interface AnimationProps {
         width: string;
         height: string;
     }
+}
+
+function HorizontalProductList(props:{dp: Product[], category: string, openDetail: (event: React.MouseEvent<HTMLDivElement>) => (e: any) => void, onAnimationEnd: (event: React.AnimationEvent<HTMLDivElement>) => void}) {
+    const {dp, category, openDetail, onAnimationEnd} = props;
+    const dpFiltered = dp.filter(d => d.category === category);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+    function onScroll(){
+        const scrollContainer = scrollContainerRef.current;
+        invariant(scrollContainer);
+        const {scrollLeft,offsetWidth,scrollWidth} = scrollContainer;
+        const isMostLeft = scrollLeft <= 10;
+        const isMostRight = (scrollLeft + offsetWidth) >= scrollWidth - 10 ;
+        const leftShadow:HTMLElement = scrollContainer.nextElementSibling as any;
+        invariant(leftShadow);
+        const rightShadow:HTMLElement = leftShadow.nextElementSibling as any;
+        leftShadow.style.opacity = isMostLeft ? '0' : '1';
+        rightShadow.style.opacity = isMostRight ? '0' : '1';
+    }
+    useEffect(onScroll,[])
+
+
+    return <Vertical style={{position: 'relative',overflow:'hidden'}}>
+        <Horizontal ref={scrollContainerRef} style={{ position: 'relative', scrollSnapType: 'x mandatory', overflow: 'auto'}}
+                    onScroll={onScroll}>
+            {dpFiltered.map(d => {
+                return (<Vertical key={d.barcode} style={{flexShrink: 0}}>
+                    <Vertical backgroundColor={'#FFF'} p={5}
+                              style={{borderRadius: 5, flexGrow: 1, zIndex: 0}}
+                              onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  if (e.currentTarget.style.zIndex !== '0') {
+                                      console.log('We dont need again');
+                                      return;
+                                  }
+                                  const closeDetail = openDetail(e);
+                                  const closeIcon: HTMLDivElement = e.currentTarget.querySelector('[data-closeicon]') as HTMLDivElement;
+                                  closeIcon.onclick = closeDetail;
+                              }}
+                              onAnimationEnd={(e) => onAnimationEnd(e)}
+                    >
+                        <Vertical style={{position: 'relative', height: '100%'}}>
+                            <img src={`/images/${d.barcode}/THUMB/default.jpg`} width={110} height={150}/>
+                            <Vertical style={{zIndex: 1, bottom: 0, width: 110}}>
+                                <Vertical style={{fontSize: '1rem'}}>
+                                    {d.name}
+                                </Vertical>
+                                <Vertical style={{fontSize: '0.8rem'}}>
+                                    <Vertical>
+                                        {d.unit} {d.unitType}
+                                    </Vertical>
+                                    <Vertical style={{color: 'dodgerblue', fontWeight: 'bold'}}>
+                                        {d.price} AED
+                                    </Vertical>
+                                </Vertical>
+                                <Vertical
+                                    data-closeicon={'true'}
+                                    position={'absolute'}
+                                    top={-5} right={-5}
+                                    style={{display: 'none', color: 'dodgerblue', fontSize: '2rem'}}
+                                >
+                                    <IoClose></IoClose>
+                                </Vertical>
+                            </Vertical>
+                        </Vertical>
+
+                    </Vertical>
+                </Vertical>)
+            })}
+        </Horizontal>
+        <Vertical position={'absolute'} left={-20} top={0} h={'100%'} w={20} backgroundColor={'#FFF'}
+                  style={{boxShadow: '7px 0px 10px -7px rgba(0,0,0,0.5)',opacity:0,transition:'opacity 100ms ease-in-out',borderRadius:0}}
+        />
+        <Vertical position={'absolute'} right={-20} top={0} h={'100%'} w={20} backgroundColor={'#FFF'}
+                  style={{boxShadow: '-7px 0px 10px -7px rgba(0,0,0,0.5)',opacity:0,transition:'opacity 100ms ease-in-out',borderRadius:0}}
+        />
+    </Vertical>;
 }
 
 function App() {
@@ -139,7 +216,7 @@ function App() {
     }
 
     return <Vertical>
-        <Vertical pL={10} pR={10} pT={10} hAlign={'left'}>
+        <Vertical pL={10} pR={10} pT={10} hAlign={'left'} >
             <Vertical style={{fontSize: '2rem', textAlign: 'center', flexGrow: 1}}>
                 Farm To Table
             </Vertical>
@@ -149,63 +226,20 @@ function App() {
                 morning. Our trucks will depart from our farm at 4 a.m. and arrive at your location between 7 and 10
                 a.m.
             </Vertical>
-            <input placeholder={'Search here'} onChange={(e) => setGlobalSearch(e.target.value)}/>
+            <input placeholder={'Search here'} onChange={(e) => setGlobalSearch(e.target.value)}
+                   className={'input'} style={{marginTop:'1rem'}}
+            />
         </Vertical>
         {category.map(category => {
-            return <Vertical key={category} mL={10} mT={10} mR={10} >
+            return <Vertical key={category} mL={10} mT={10} mR={10}>
                 <Vertical style={{fontSize: '1.5rem'}}>
                     {category}
                 </Vertical>
+                <HorizontalProductList dp={dp}
+                                       category={category}
+                                       openDetail={openDetail}
+                                       onAnimationEnd={onAnimationEnd} />
 
-                <Vertical overflow={'auto'} >
-                    <Horizontal style={{gap: 10,position:'relative'}} >
-                        {dp.filter(d => d.category === category).map(d => {
-                            return (<Vertical key={d.barcode} style={{flexShrink: 0}}>
-                                <Vertical backgroundColor={'#FFF'}  p={5}
-                                          style={{borderRadius: 5, flexGrow: 1,zIndex:0}}
-                                          onClick={(e) => {
-                                              e.preventDefault();
-                                              e.stopPropagation();
-                                              if (e.currentTarget.style.zIndex !== '0') {
-                                                  console.log('We dont need again');
-                                                  return;
-                                              }
-                                              const closeDetail = openDetail(e);
-                                              const closeIcon: HTMLDivElement = e.currentTarget.querySelector('[data-closeicon]') as HTMLDivElement;
-                                              closeIcon.onclick = closeDetail;
-                                          }}
-                                          onAnimationEnd={(e) => onAnimationEnd(e)}
-                                >
-                                    <Vertical style={{position: 'relative',height:'100%'}}>
-                                        <img src={`/images/${d.barcode}/THUMB/default.jpg`}  width={110} height={150} />
-                                        <Vertical style={{zIndex:1,bottom:0,width:110}}>
-                                            <Vertical style={{fontSize: '1rem'}}>
-                                                {d.name}
-                                            </Vertical>
-                                            <Vertical style={{fontSize:'0.8rem'}}>
-                                                <Vertical>
-                                                    {d.unit}  {d.unitType}
-                                                </Vertical>
-                                                <Vertical style={{color:'dodgerblue',fontWeight:'bold'}}>
-                                                    {d.price} AED
-                                                </Vertical>
-                                            </Vertical>
-                                            <Vertical
-                                                data-closeicon={'true'}
-                                                position={'absolute'}
-                                                top={-5} right={-5}
-                                                style={{display: 'none', color: 'dodgerblue', fontSize: '2rem'}}
-                                            >
-                                                <IoClose></IoClose>
-                                            </Vertical>
-                                        </Vertical>
-                                    </Vertical>
-
-                                </Vertical>
-                            </Vertical>)
-                        })}
-                    </Horizontal>
-                </Vertical>
             </Vertical>
         })}
         <Vertical ref={detailContainerRef}

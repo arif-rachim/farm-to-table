@@ -20,3 +20,17 @@ html,body,#root{
   height: 100%;
   overflow: auto;
 }
+
+.input{
+  width: 100%;
+  border : 1px solid #ccc;
+  border-radius: 1rem;
+  padding : 0.5rem;
+  transition: all 200ms ease-in-out;
+  text-transform: capitalize;
+}
+.input:focus{
+  outline: none;
+  border: 1px solid cadetblue;
+  background-color: rgba(0,0,0,0.01);
+}
