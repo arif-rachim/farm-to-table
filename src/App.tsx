@@ -5,6 +5,7 @@ import {data, Product} from "./data";
 import invariant from "tiny-invariant";
 import {IoClose} from "react-icons/io5";
 
+const imageSize = {width:110,height:150};
 
 interface AnimationProps {
     start: {
@@ -39,7 +40,6 @@ function HorizontalProductList(props:{dp: Product[], category: string, openDetai
     }
     useEffect(onScroll,[])
 
-
     return <Vertical style={{position: 'relative',overflow:'hidden'}}>
         <Horizontal ref={scrollContainerRef} style={{ position: 'relative', scrollSnapType: 'x mandatory', overflow: 'auto'}}
                     onScroll={onScroll}>
@@ -60,9 +60,9 @@ function HorizontalProductList(props:{dp: Product[], category: string, openDetai
                               }}
                               onAnimationEnd={(e) => onAnimationEnd(e)}
                     >
-                        <Vertical style={{position: 'relative', height: '100%'}}>
-                            <img src={`/images/${d.barcode}/THUMB/default.jpg`} width={110} height={150}/>
-                            <Vertical style={{zIndex: 1, bottom: 0, width: 110}}>
+                        <Vertical style={{position: 'relative', height: '100%'}} hAlign={'center'} vAlign={'center'}>
+                            <img src={`/images/${d.barcode}/THUMB/default.jpg`} width={imageSize.width} height={imageSize.height}/>
+                            <Vertical data-title={'true'} style={{zIndex: 1, bottom: 0, width: imageSize.width}}>
                                 <Vertical style={{fontSize: '1rem'}}>
                                     {d.name}
                                 </Vertical>
@@ -97,6 +97,7 @@ function HorizontalProductList(props:{dp: Product[], category: string, openDetai
         />
     </Vertical>;
 }
+const px = (v: any) => v + 'px';
 
 function App() {
 
@@ -119,7 +120,7 @@ function App() {
         const parentElement = element.parentElement;
 
         invariant(parentElement);
-        const px = (v: any) => v + 'px';
+
 
 
         const animationProps: AnimationProps = {
@@ -149,6 +150,7 @@ function App() {
         element.setAttribute('data-animation-props', JSON.stringify(animationProps));
 
         const css = `
+        
 .scale-up{
     animation-name: scale-up-animate;
     animation-timing-function: cubic-bezier(0,0,0.8,0.9);
@@ -159,6 +161,41 @@ function App() {
     animation-name: scale-down-animate;
     animation-timing-function: cubic-bezier(0,0,0.8,0.9);
     animation-duration: 300ms;
+}
+.scale-up [data-title="true"]{
+    opacity: 0 !important;
+}
+.scale-down [data-title="true"]{
+    opacity: 0 !important;
+}
+.scale-up img{
+    animation-name: scale-up-img;
+    animation-timing-function: cubic-bezier(0,0,0.8,0.9);
+    animation-duration: 300ms;
+}
+
+.scale-down img{
+    animation-name: scale-down-img;
+    animation-timing-function: cubic-bezier(0,0,0.8,0.9);
+    animation-duration: 300ms;
+}
+
+@keyframes scale-up-img{
+    0% {
+        transform : scale(1);
+    }
+    100% {
+        transform : scale(4);
+    }
+}
+
+@keyframes scale-down-img{
+    0% {
+        transform : scale(1);
+    }
+    100% {
+        transform : scale(0.25);
+    }
 }
 
 @keyframes scale-up-animate {
@@ -194,7 +231,10 @@ function App() {
     }
 
     function onAnimationEnd(event: AnimationEvent<HTMLDivElement>) {
+
         const element = (event.currentTarget as HTMLDivElement);
+        const img:HTMLImageElement = element.querySelector('img') as any;
+        invariant(img);
         const animationProps: AnimationProps = JSON.parse(element.getAttribute('data-animation-props') ?? '');
         if (event.animationName === 'scale-up-animate') {
             element.classList.remove('scale-up');
@@ -202,6 +242,9 @@ function App() {
             element.style.left = animationProps.end.left;
             element.style.width = animationProps.end.width;
             element.style.height = animationProps.end.height;
+
+            img.style.width = px(imageSize.width * 4);
+            img.style.height = px(imageSize.height * 4);
         }
 
         if (event.animationName === 'scale-down-animate') {
@@ -212,6 +255,8 @@ function App() {
             element.style.height = "unset";
             element.style.zIndex = "0";
             element.style.position = 'relative';
+            img.style.width = px(imageSize.width);
+            img.style.height = px(imageSize.height);
         }
     }
 
