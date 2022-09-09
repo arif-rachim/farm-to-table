@@ -25,7 +25,7 @@ async function checkFolder(children){
             if(child.name.endsWith('.jpg') && child.path.indexOf('/HR/') > 0){
 
                 const folder = child.path.replace(child.name,'');
-                const thumbFolder = folder.replace('HR','THUMB');
+                const thumbFolder = folder.replace('HR','400');
                 // lets compress this
                 /*
                 // this is for reducing the image compression
@@ -39,13 +39,13 @@ async function checkFolder(children){
                 }
                 */
                 // this is for creating thumb nail
-                /*
+
                 try {
                     const thumbnailInfo = await thumbnail({
                         src: child.path,
                         dst : thumbFolder+child.name,
-                        width: 100,
-                        height: 200,
+                        width: 400,
+                        height: 800,
                         quality : 100
                     });
 
@@ -53,7 +53,7 @@ async function checkFolder(children){
                 } catch (e) {
                     console.log("Error: ", e);
                 }
-                */
+
             }
 
         }

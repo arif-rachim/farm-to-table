@@ -2,8 +2,6 @@ import React, {AnimationEvent, MouseEvent, useEffect, useRef, useState} from 're
 import './App.css';
 import {Horizontal, Vertical} from "react-hook-components";
 import {data, Product} from "./data";
-import invariant from "tiny-invariant";
-import {IoClose} from "react-icons/io5";
 import {HorizontalProductList} from "./HorizontalProductList";
 
 export const imageSize = {width:110,height:150};
@@ -14,8 +12,6 @@ export const imageSize = {width:110,height:150};
 
 
 function App() {
-
-    const detailContainerRef = useRef<HTMLDivElement>(null);
 
     const [globalSearch, setGlobalSearch] = useState('');
     const dp = data.filter(d => JSON.stringify(d).toLowerCase().indexOf(globalSearch) >= 0);
