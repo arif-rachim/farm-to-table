@@ -5,6 +5,8 @@
 /.pnp
 .pnp.js
 /public/images/**/HR
+/public/images/**/HIRES
+/public/images/**/800
 # testing
 /coverage
 

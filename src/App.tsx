@@ -4,7 +4,7 @@ import {Horizontal, Vertical} from "react-hook-components";
 import {data, Product} from "./data";
 import {HorizontalProductList} from "./HorizontalProductList";
 
-export const imageSize = {width:110,height:150};
+
 
 
 
