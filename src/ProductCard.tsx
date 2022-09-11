@@ -10,7 +10,7 @@ const imageScale = 4;
 function CardThumb(props:{d: Product,visible:boolean}) {
     const {d,visible} = props;
     return <Vertical style={{opacity:visible?1:0,zIndex:visible?0:-1,transition:'opacity 300ms ease-in-out'}}>
-        <img data-image-thumb={'true'} alt={d.name} src={`/images/${d.barcode}/THUMB/default.png`} width={imageSize.width}
+        <img data-image-thumb={'true'} alt={d.name} src={`/images/${d.barcode}/THUMB/1.png`} width={imageSize.width}
              height={imageSize.height} style={{width:imageSize.width,height:imageSize.height}} />
         <Vertical data-title={'true'}  style={{zIndex: 1, bottom: 0, width: imageSize.width,height:60,overflow:'hidden'}} >
             <Vertical style={{fontSize: '0.8rem'}}>
@@ -29,25 +29,18 @@ function CardThumb(props:{d: Product,visible:boolean}) {
 }
 function CardDetail(props:{d: Product,visible:boolean}) {
     const {d,visible} = props;
-    const scaleThumb = 0.9;
-    const [currentImage,setCurrentImage] = useState<string>('default');
     return <Vertical style={{position:'absolute',display:visible?'flex':'none',opacity:visible?1:0,zIndex:visible?0:-1,transition:'opacity 300ms ease-in-out'}} top={-5} left={0} w={'100%'} h={'100%'} hAlign={'center'} vAlign={'center'}>
-        <Vertical>
-            <img alt={d.name} src={visible?`/images/${d.barcode}/400/${currentImage}.png`:''} width={imageSize.width * imageScale}
-             height={imageSize.height * imageScale} style={{width:imageSize.width * imageScale,height:imageSize.height * imageScale,marginBottom:50}}/>
-        </Vertical>
-        {visible &&
-            <Horizontal position={'absolute'} bottom={0} w={'100%'} hAlign={'center'}>
-                {Array.from({length: 4}).map((_, index) => {
-                    return <img key={index} alt={d.name + ' thumb'}
-                                src={visible ? `/images/${d.barcode}/THUMB/${index + 1}.png` : ''}
-                                width={imageSize.width * scaleThumb}
-                                height={imageSize.height * scaleThumb}
-                                style={{width: imageSize.width * scaleThumb, height: imageSize.height * scaleThumb}}
-                                onClick={() => setCurrentImage((index + 1).toString())}/>
-                })}
-            </Horizontal>
-        }
+        <Horizontal style={{overflow:'auto',width:imageSize.width * imageScale,height:(imageSize.height * imageScale) + 50,scrollSnapType:'x mandatory'}}>
+            <img alt={d.name} src={visible?`/images/${d.barcode}/400/1.png`:''} width={imageSize.width * imageScale}
+             height={imageSize.height * imageScale} style={{width:imageSize.width * imageScale,height:imageSize.height * imageScale,scrollSnapAlign:"start",marginBottom:50}}/>
+            <img alt={d.name} src={visible?`/images/${d.barcode}/400/2.png`:''} width={imageSize.width * imageScale}
+                 height={imageSize.height * imageScale} style={{width:imageSize.width * imageScale,height:imageSize.height * imageScale,scrollSnapAlign:"start",marginBottom:50}}/>
+            <img alt={d.name} src={visible?`/images/${d.barcode}/400/3.png`:''} width={imageSize.width * imageScale}
+                 height={imageSize.height * imageScale} style={{width:imageSize.width * imageScale,height:imageSize.height * imageScale,scrollSnapAlign:"start",marginBottom:50}}/>
+            <img alt={d.name} src={visible?`/images/${d.barcode}/400/4.png`:''} width={imageSize.width * imageScale}
+                 height={imageSize.height * imageScale} style={{width:imageSize.width * imageScale,height:imageSize.height * imageScale,scrollSnapAlign:"start",marginBottom:50}}/>
+        </Horizontal>
+
     </Vertical>
 }
 export function ProductCard(props: { d: Product }) {
