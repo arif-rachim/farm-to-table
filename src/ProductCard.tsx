@@ -1,5 +1,5 @@
 import {Product} from "./data";
-import React, {AnimationEvent, MouseEvent, useState} from "react";
+import React, {AnimationEvent, MouseEvent, useRef, useState} from "react";
 import invariant from "tiny-invariant";
 import {Horizontal, Vertical} from "react-hook-components";
 import {IoClose} from "react-icons/io5";
@@ -29,18 +29,23 @@ function CardThumb(props:{d: Product,visible:boolean}) {
 }
 function CardDetail(props:{d: Product,visible:boolean}) {
     const {d,visible} = props;
+    const containerRef = useRef<HTMLDivElement>(null);
     return <Vertical style={{position:'absolute',display:visible?'flex':'none',opacity:visible?1:0,zIndex:visible?0:-1,transition:'opacity 300ms ease-in-out'}} top={-5} left={0} w={'100%'} h={'100%'} hAlign={'center'} vAlign={'center'}>
-        <Horizontal style={{overflow:'auto',width:imageSize.width * imageScale,height:(imageSize.height * imageScale) + 50,scrollSnapType:'x mandatory'}}>
-            <img alt={d.name} src={visible?`/images/${d.barcode}/400/1.png`:''} width={imageSize.width * imageScale}
-             height={imageSize.height * imageScale} style={{width:imageSize.width * imageScale,height:imageSize.height * imageScale,scrollSnapAlign:"start",marginBottom:50}}/>
-            <img alt={d.name} src={visible?`/images/${d.barcode}/400/2.png`:''} width={imageSize.width * imageScale}
-                 height={imageSize.height * imageScale} style={{width:imageSize.width * imageScale,height:imageSize.height * imageScale,scrollSnapAlign:"start",marginBottom:50}}/>
-            <img alt={d.name} src={visible?`/images/${d.barcode}/400/3.png`:''} width={imageSize.width * imageScale}
-                 height={imageSize.height * imageScale} style={{width:imageSize.width * imageScale,height:imageSize.height * imageScale,scrollSnapAlign:"start",marginBottom:50}}/>
-            <img alt={d.name} src={visible?`/images/${d.barcode}/400/4.png`:''} width={imageSize.width * imageScale}
-                 height={imageSize.height * imageScale} style={{width:imageSize.width * imageScale,height:imageSize.height * imageScale,scrollSnapAlign:"start",marginBottom:50}}/>
+        <Horizontal ref={containerRef} style={{overflow:'auto',width:imageSize.width * imageScale,height:(imageSize.height * imageScale) + 50,scrollSnapType:'x mandatory'}}>
+            {Array.from({length:4}).map((_,index) => {
+                return <img key={index} alt={d.name} src={visible?`/images/${d.barcode}/400/${index+1}.png`:''} width={imageSize.width * imageScale}
+                            height={imageSize.height * imageScale} style={{width:imageSize.width * imageScale,height:imageSize.height * imageScale,scrollSnapAlign:"start",marginBottom:50}}/>
+            })}
         </Horizontal>
-
+        <Horizontal style={{position:'absolute',bottom:0}}>
+            {Array.from({length:4}).map((_,index) => {
+                return <img key={index} alt={d.name} src={visible?`/images/${d.barcode}/THUMB/${index+1}.png`:''} width={imageSize.width}
+                            height={imageSize.height} style={{width:imageSize.width,height:imageSize.height}} onClick={() => {
+                                invariant(containerRef.current);
+                                containerRef.current.scrollTo({left:imageSize.width * imageScale * index});
+                }}/>
+            })}
+        </Horizontal>
     </Vertical>
 }
 export function ProductCard(props: { d: Product }) {
