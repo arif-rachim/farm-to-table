@@ -5,12 +5,6 @@ import {data, Product} from "./data";
 import {HorizontalProductList} from "./HorizontalProductList";
 
 
-
-
-
-
-
-
 function App() {
 
     const [globalSearch, setGlobalSearch] = useState('');

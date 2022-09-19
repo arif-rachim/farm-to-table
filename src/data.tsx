@@ -1014,7 +1014,7 @@ export const data:Product[] = [
     },
     {
         "internalCode": "M2452",
-        "name": "Blueberry Greek Yoghurt 360g.",
+        "name": "Blueberry Greek Yoghurt",
         "unit": "360",
         "unitType": "GRAMS",
         "barcode": "6291031000747",
@@ -1058,7 +1058,7 @@ export const data:Product[] = [
     },
     {
         "internalCode": "M2441",
-        "name": "Apple Cinnamon Greek Yoghurt",
+        "name": "Apple Cinnamon Greek",
         "unit": "150",
         "unitType": "GRAMS",
         "barcode": "6291031002789",
@@ -1135,7 +1135,7 @@ export const data:Product[] = [
     },
     {
         "internalCode": "M2505",
-        "name": "Apple And Cinnamon With Oats Yoghurt",
+        "name": "Apple And Cinnamon With Oats",
         "unit": "300",
         "unitType": "ML.",
         "barcode": "6291031002628",
@@ -1146,8 +1146,8 @@ export const data:Product[] = [
     },
     {
         "internalCode": "M5901",
-        "name": "Marmum Juice Asstd 1.75 Ltr X 2",
-        "unit": "3.5",
+        "name": "Assorted Juice",
+        "unit": "1.75 Ltr X 2",
         "unitType": "LTR.",
         "barcode": "2000008174411",
         "price": "14.00",
@@ -1157,8 +1157,8 @@ export const data:Product[] = [
     },
     {
         "internalCode": "M5902",
-        "name": "Marmum Juice Asstd 1 Ltr X 3",
-        "unit": "3",
+        "name": "Assorted Juice",
+        "unit": "1 X 3",
         "unitType": "LTR.",
         "barcode": "6291031010821",
         "price": "11.50",
@@ -1168,9 +1168,9 @@ export const data:Product[] = [
     },
     {
         "internalCode": "M5904",
-        "name": "Marmum Juice Asstd 500 Ml X 3",
-        "unit": "1.5",
-        "unitType": "LTR.",
+        "name": "Assorted Juice",
+        "unit": "500 x 3",
+        "unitType": "ML.",
         "barcode": "6291031002727",
         "price": "6.00",
         "shelfLife": "30",
@@ -1179,7 +1179,7 @@ export const data:Product[] = [
     },
     {
         "internalCode": "M7000",
-        "name": "Marmum Uht Full Fat Milk 1 Ltr",
+        "name": "Uht Full Fat Milk 1 Ltr",
         "unit": "1",
         "unitType": "LTR.",
         "barcode": "6291031001195",
@@ -1190,8 +1190,8 @@ export const data:Product[] = [
     },
     {
         "internalCode": "M7026",
-        "name": "Marmum Uht Full Fat Milk 1 Ltr X 4",
-        "unit": "1X4",
+        "name": "Uht Full Fat Milk 1 Ltr X 4",
+        "unit": "1 x 4",
         "unitType": "LTR.",
         "barcode": "6291031001218",
         "price": "20.68",
@@ -1201,8 +1201,8 @@ export const data:Product[] = [
     },
     {
         "internalCode": "",
-        "name": "Full Cream Milk 1ltr. X 12",
-        "unit": "12",
+        "name": "Full Cream Milk",
+        "unit": "1 x 12",
         "unitType": "LTR.",
         "barcode": "6291031001188",
         "price": "62.04",
@@ -1212,7 +1212,7 @@ export const data:Product[] = [
     },
     {
         "internalCode": "",
-        "name": "Marmum Uht Low Fat Milk 1 Ltr",
+        "name": "Uht Low Fat Milk",
         "unit": "1",
         "unitType": "LTR.",
         "barcode": "6291031001232",
@@ -1267,7 +1267,7 @@ export const data:Product[] = [
     },
     {
         "internalCode": "M7033",
-        "name": "Shredded Mozzarella Cheese - 500gm+200gm Special Offer",
+        "name": "Shredded Mozzarella",
         "unit": "700",
         "unitType": "GRAMS",
         "barcode": "6291031002857",
@@ -1278,7 +1278,7 @@ export const data:Product[] = [
     },
     {
         "internalCode": "M7034",
-        "name": "Shredded Mozzarella Cheese - 200gm+200gm Special Offer",
+        "name": "Shredded Mozzarella Cheese",
         "unit": "400",
         "unitType": "GRAMS",
         "barcode": "6291031002864",

@@ -3,16 +3,20 @@ import React, {AnimationEvent, MouseEvent, useRef, useState} from "react";
 import invariant from "tiny-invariant";
 import {Horizontal, Vertical} from "react-hook-components";
 import {IoClose} from "react-icons/io5";
+import {Stepper} from "antd-mobile";
 
 const px = (v: any) => v + 'px';
-const imageSize = {width:100,height:100};
+const imageSize = {width: 100, height: 100};
 const imageScale = 4;
-function CardThumb(props:{d: Product,visible:boolean}) {
-    const {d,visible} = props;
-    return <Vertical style={{opacity:visible?1:0,zIndex:visible?0:-1,transition:'opacity 300ms ease-in-out'}}>
+const thumbScale = 0.7;
+function CardThumb(props: { d: Product, visible: boolean }) {
+    const {d, visible} = props;
+    return <Vertical
+        style={{opacity: visible ? 1 : 0, zIndex: visible ? 0 : -1, transition: 'opacity 300ms ease-in-out'}}>
         <img data-image-thumb={'true'} alt={d.name} src={`/images/${d.barcode}/THUMB/1.png`} width={imageSize.width}
-             height={imageSize.height} style={{width:imageSize.width,height:imageSize.height}} />
-        <Vertical data-title={'true'}  style={{zIndex: 1, bottom: 0, width: imageSize.width,height:60,overflow:'hidden'}} >
+             height={imageSize.height} style={{width: imageSize.width, height: imageSize.height}}/>
+        <Vertical data-title={'true'}
+                  style={{zIndex: 1, bottom: 0, width: imageSize.width, height: 60, overflow: 'hidden'}}>
             <Vertical style={{fontSize: '0.8rem'}}>
                 {d.name}
             </Vertical>
@@ -27,27 +31,75 @@ function CardThumb(props:{d: Product,visible:boolean}) {
         </Vertical>
     </Vertical>;
 }
-function CardDetail(props:{d: Product,visible:boolean}) {
-    const {d,visible} = props;
+
+function CardDetail(props: { d: Product, visible: boolean }) {
+    const {d, visible} = props;
     const containerRef = useRef<HTMLDivElement>(null);
-    return <Vertical style={{position:'absolute',display:visible?'flex':'none',opacity:visible?1:0,zIndex:visible?0:-1,transition:'opacity 300ms ease-in-out'}} top={-5} left={0} w={'100%'} h={'100%'} hAlign={'center'} vAlign={'center'}>
-        <Horizontal ref={containerRef} style={{overflow:'auto',width:imageSize.width * imageScale,height:(imageSize.height * imageScale) + 50,scrollSnapType:'x mandatory'}}>
-            {Array.from({length:4}).map((_,index) => {
-                return <img key={index} alt={d.name} src={visible?`/images/${d.barcode}/400/${index+1}.png`:''} width={imageSize.width * imageScale}
-                            height={imageSize.height * imageScale} style={{width:imageSize.width * imageScale,height:imageSize.height * imageScale,scrollSnapAlign:"start",marginBottom:50}}/>
-            })}
-        </Horizontal>
-        <Horizontal style={{position:'absolute',bottom:0}}>
-            {Array.from({length:4}).map((_,index) => {
-                return <img key={index} alt={d.name} src={visible?`/images/${d.barcode}/THUMB/${index+1}.png`:''} width={imageSize.width}
-                            height={imageSize.height} style={{width:imageSize.width,height:imageSize.height}} onClick={() => {
-                                invariant(containerRef.current);
-                                containerRef.current.scrollTo({left:imageSize.width * imageScale * index});
+    return <Vertical style={{
+        position: 'absolute',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        display: visible ? 'flex' : 'none',
+        opacity: visible ? 1 : 0,
+        zIndex: visible ? 0 : -1,
+        transition: 'opacity 300ms ease-in-out'
+    }} top={-5} left={0} w={'100%'} h={'100%'} hAlign={'center'} vAlign={'center'}>
+        <Vertical position={'absolute'} top={20} w={'100%'} p={10} style={{maxWidth: 400}}>
+            <Vertical style={{fontSize: '2rem'}}>
+                {d.name}
+            </Vertical>
+            <Horizontal style={{fontSize: '1.2rem',marginTop:10}}>
+                {d.unit} {d.unitType}
+                <Vertical style={{flexGrow: 1}}/>
+                <Horizontal style={{color: 'dodgerblue', fontWeight: 'bold'}}>
+                    {d.price} AED
+                </Horizontal>
+            </Horizontal>
+        </Vertical>
+        <Horizontal ref={containerRef} style={{
+            overflow: 'auto',
+            width: imageSize.width * imageScale,
+            height: (imageSize.height * imageScale) + 50,
+            scrollSnapType: 'x mandatory'
+        }}>
+            {Array.from({length: 4}).map((_, index) => {
+                return <img key={index} alt={d.name} src={visible ? `/images/${d.barcode}/400/${index + 1}.png` : ''}
+                            width={imageSize.width * imageScale}
+                            height={imageSize.height * imageScale} style={{
+                    width: imageSize.width * imageScale,
+                    height: imageSize.height * imageScale,
+                    scrollSnapAlign: "start",
+                    marginBottom: 50
                 }}/>
             })}
         </Horizontal>
+        <Vertical style={{position: 'absolute', bottom: 0,paddingBottom:10}} hAlign={'center'}>
+
+            <Horizontal >
+                {Array.from({length: 4}).map((_, index) => {
+                    return <img key={index} alt={d.name}
+                                src={visible ? `/images/${d.barcode}/THUMB/${index + 1}.png` : ''}
+                                width={imageSize.width * thumbScale}
+                                height={imageSize.height * thumbScale} style={{width: imageSize.width * thumbScale, height: imageSize.height * thumbScale}}
+                                onClick={() => {
+                                    invariant(containerRef.current);
+                                    containerRef.current.scrollTo({left: imageSize.width * imageScale * index});
+                                }}/>
+                })}
+            </Horizontal>
+            <Horizontal style={{maxWidth: 'calc(100% - 50px)', minWidth:350, width: '100%',paddingBottom:10,paddingTop:30,backgroundColor:'rgba(255,255,255,0.7)',borderRadius:5}} vAlign={'center'}>
+                <Horizontal vAlign={'center'} style={{fontSize:'1.5rem'}}>
+                    Add To Cart
+                </Horizontal>
+                <Vertical style={{flexGrow:1}}/>
+                <Vertical mL={10} style={{backgroundColor:'#FFF',paddingRight:50}} >
+                    <Stepper defaultValue={0} style={{transform:'scale(2)'}}/>
+                </Vertical>
+            </Horizontal>
+        </Vertical>
     </Vertical>
 }
+
 export function ProductCard(props: { d: Product }) {
     const {d} = props;
     const [viewDetail, setViewDetail] = useState<boolean>(false);
@@ -55,7 +107,7 @@ export function ProductCard(props: { d: Product }) {
     function onAnimationEnd(event: AnimationEvent<HTMLDivElement>) {
         const element = (event.currentTarget as HTMLDivElement);
         const img: HTMLImageElement = element.querySelector('img') as any;
-        const title : HTMLDivElement = element.querySelector('[data-title="true"]') as any;
+        const title: HTMLDivElement = element.querySelector('[data-title="true"]') as any;
         invariant(img);
         invariant(title);
         const animationProps: AnimationProps = JSON.parse(element.getAttribute('data-animation-props') ?? '');
@@ -141,7 +193,7 @@ export function ProductCard(props: { d: Product }) {
     }
 
     return (<Vertical key={d.barcode} style={{flexShrink: 0}}>
-        <Vertical backgroundColor={'#FFF'} p={5}
+        <Vertical backgroundColor={'#FFF'}
                   style={{borderRadius: 5, flexGrow: 1, zIndex: 0}}
                   onClick={(e) => {
                       e.preventDefault();
@@ -162,7 +214,7 @@ export function ProductCard(props: { d: Product }) {
                 <Vertical
                     data-closeicon={'true'}
                     position={'absolute'}
-                    top={-5} right={-5}
+                    top={0} right={0}
                     style={{display: 'none', color: 'dodgerblue', fontSize: '2rem'}}
                 >
                     <IoClose/>
@@ -234,7 +286,7 @@ function generateCss(animationProps: AnimationProps) {
         transform : scale(1);
     }
     100% {
-        transform : scale(${1/imageScale});
+        transform : scale(${1 / imageScale});
     }
 }
 
