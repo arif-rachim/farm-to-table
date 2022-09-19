@@ -1,17 +1,16 @@
 import React, {AnimationEvent, MouseEvent, useEffect, useRef, useState} from 'react';
 import './App.css';
-import {Horizontal, Vertical} from "react-hook-components";
-import {data, Product} from "./data";
+import {Vertical} from "react-hook-components";
+import {data} from "./data";
 import {HorizontalProductList} from "./HorizontalProductList";
+import {db} from "./firebase";
 
-
+console.log('We have db ',db);
 function App() {
 
     const [globalSearch, setGlobalSearch] = useState('');
     const dp = data.filter(d => JSON.stringify(d).toLowerCase().indexOf(globalSearch) >= 0);
     const category = Array.from(new Set(dp.map(d => d.category)));
-
-
 
     return <Vertical>
         <Vertical pL={10} pR={10} pT={10} hAlign={'left'} >
