@@ -3,13 +3,13 @@ import React, {useEffect, useRef} from "react";
 import invariant from "tiny-invariant";
 import {Horizontal, Vertical} from "react-hook-components";
 import {ProductCard} from "./ProductCard";
+import {db, LineItem} from "./db";
+import {useObserver} from "react-hook-useobserver";
 
 
 
-export function HorizontalProductList(props: { dp: Product[], category: string }) {
-    const {dp, category} = props;
-
-
+export function HorizontalProductList(props: { dp: Product[], category: string,onValueChange:() => void }) {
+    const {dp, category,onValueChange} = props;
 
     const dpFiltered = dp.filter(d => d.category === category);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -34,12 +34,12 @@ export function HorizontalProductList(props: { dp: Product[], category: string }
                     style={{position: 'relative', scrollSnapType: 'x mandatory', overflow: 'auto'}}
                     onScroll={onScroll}>
             {dpFiltered.map(d => {
-                return <ProductCard d={d} key={d.barcode}/>
+                return <ProductCard d={d} key={d.barcode} onValueChange={onValueChange}/>
             })}
         </Horizontal>
         <Vertical position={'absolute'} left={-20} top={0} h={'100%'} w={20} backgroundColor={'#FFF'}
                   style={{
-                      boxShadow: '7px 0px 10px -7px rgba(0,0,0,0.5)',
+                      boxShadow: '0px 0px 10px -1px rgba(0,0,0,0.9)',
                       opacity: 0,
                       transition: 'opacity 100ms ease-in-out',
                       borderRadius: 0
@@ -47,7 +47,7 @@ export function HorizontalProductList(props: { dp: Product[], category: string }
         />
         <Vertical position={'absolute'} right={-20} top={0} h={'100%'} w={20} backgroundColor={'#FFF'}
                   style={{
-                      boxShadow: '-7px 0px 10px -7px rgba(0,0,0,0.5)',
+                      boxShadow: '0px 0px 10px -1px rgba(0,0,0,0.9)',
                       opacity: 0,
                       transition: 'opacity 100ms ease-in-out',
                       borderRadius: 0

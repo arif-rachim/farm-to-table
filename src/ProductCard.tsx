@@ -1,9 +1,11 @@
 import {Product} from "./data";
-import React, {AnimationEvent, MouseEvent, useRef, useState} from "react";
+import React, {AnimationEvent, MouseEvent, useEffect, useRef, useState} from "react";
 import invariant from "tiny-invariant";
 import {Horizontal, Vertical} from "react-hook-components";
 import {IoClose} from "react-icons/io5";
 import {Stepper} from "antd-mobile";
+import {db, LineItem} from "./db";
+import {useObserver,ObserverValue} from "react-hook-useobserver";
 
 const px = (v: any) => v + 'px';
 const imageSize = {width: 100, height: 100};
@@ -32,9 +34,22 @@ function CardThumb(props: { d: Product, visible: boolean }) {
     </Vertical>;
 }
 
-function CardDetail(props: { d: Product, visible: boolean }) {
+function CardDetail(props: { d: Product, visible: boolean,onValueChange:() =>void }) {
     const {d, visible} = props;
+    const product = d;
     const containerRef = useRef<HTMLDivElement>(null);
+    const [$total,setTotal] = useObserver(0);
+    useEffect(() => {
+        if(visible){
+            (async() => {
+                const lineItem = await db?.items?.filter((item:LineItem) => item.barcode === product.barcode)?.first();
+                if(lineItem){
+                    setTotal(lineItem.total);
+                }
+            })();
+        }
+
+    },[visible,product.barcode,setTotal]);
     return <Vertical style={{
         position: 'absolute',
         overflowY: 'auto',
@@ -92,16 +107,27 @@ function CardDetail(props: { d: Product, visible: boolean }) {
                     Add To Cart
                 </Horizontal>
                 <Vertical style={{flexGrow:1}}/>
-                <Vertical mL={10} style={{backgroundColor:'#FFF',paddingRight:50}} >
-                    <Stepper defaultValue={0} style={{transform:'scale(2)'}}/>
+                <Vertical mL={10} style={{backgroundColor:'#FFF',paddingRight:20}} >
+                    <ObserverValue observers={$total} render={() => {
+                        return <Stepper value={$total.current} style={{transform:'scale(1.5)'}} onChange={async (value) => {
+                            setTotal(value);
+                            const lineItem = await db?.items?.filter((item:LineItem) => item.barcode === product.barcode)?.first();
+                            if(lineItem && lineItem.id){
+                                db.items.update(lineItem.id,{total:value});
+                            }else{
+                                db.items.add({total:value,product,barcode:product.barcode});
+                            }
+                            props.onValueChange();
+                        }}/>
+                    }}/>
                 </Vertical>
             </Horizontal>
         </Vertical>
     </Vertical>
 }
 
-export function ProductCard(props: { d: Product }) {
-    const {d} = props;
+export function ProductCard(props: { d: Product,onValueChange:() => void }) {
+    const {d,onValueChange} = props;
     const [viewDetail, setViewDetail] = useState<boolean>(false);
 
     function onAnimationEnd(event: AnimationEvent<HTMLDivElement>) {
@@ -199,7 +225,6 @@ export function ProductCard(props: { d: Product }) {
                       e.preventDefault();
                       e.stopPropagation();
                       if (e.currentTarget.style.zIndex !== '0') {
-                          console.log('We dont need again');
                           return;
                       }
                       const closeDetail = openDetail(e);
@@ -210,7 +235,7 @@ export function ProductCard(props: { d: Product }) {
         >
             <Vertical style={{position: 'relative', height: '100%'}} hAlign={'center'} vAlign={'center'}>
                 <CardThumb d={d} visible={!viewDetail}/>
-                <CardDetail d={d} visible={viewDetail}/>
+                <CardDetail d={d} visible={viewDetail} onValueChange={onValueChange}/>
                 <Vertical
                     data-closeicon={'true'}
                     position={'absolute'}

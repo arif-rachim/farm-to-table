@@ -34,3 +34,31 @@ html,body,#root{
   border: 1px solid cadetblue;
   background-color: rgba(0,0,0,0.01);
 }
+.search{
+  width: 100%;
+  border-top : 1px solid #ccc;
+  border-bottom : 1px solid #ccc;
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+  padding : 0.5rem;
+  transition: background-color 300ms ease-in-out;
+}
+.search:focus{
+  outline: none;
+  background-color: lightgoldenrodyellow;
+}
+.blur-background{
+  backdrop-filter : blur(5px) contrast(60%);
+  -webkit-backdrop-filter: blur(5px) contrast(60%);
+}
+.bottom-navbar{
+  top: calc(100% - 50px);
+  transition: top 300ms cubic-bezier(0,0,0.7,0.9);
+  height: calc(100% - 64px);
+  z-index: 1;
+}
+.bottom-navbar.open{
+  top : 64px;
+
+}
